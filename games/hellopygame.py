@@ -1,5 +1,4 @@
 import pygame
-import os
 
 pygame.init()
 
@@ -20,3 +19,4 @@ pygame.quit()
 
 
 # add_two_tuples(1, 2, 3)
+#
