@@ -11,6 +11,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
 
 # Total Window
@@ -49,13 +50,14 @@ while not game_over:
             game_over = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
-            try:
+            if 50 <= x <= 550 and 50 <= y <= 550:
                 target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
-                target_tile.draw(screen, RED)
+                target_tile.draw(screen, DARK_RED)
                 target_tile.draw(screen, WHITE, 2)
                 print(x, y)
-            except Exception as e:
-                print(e)
+            else:
+                print(x, y)
+                print("바깥쪽")
 
     # 그린 선 반영
     pygame.display.update()
