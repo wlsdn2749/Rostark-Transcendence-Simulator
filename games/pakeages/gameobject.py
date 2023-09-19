@@ -29,6 +29,16 @@ class Tile(pygame.Rect):  # type: ignore
         self.enabled = False  # 파괴됬다고 표시
 
 
+class Element:
+    def __init__(self) -> None:
+        pass
+
+
+class Card(Element):
+    def __init__(self) -> None:
+        super().__init__()
+
+
 # if __name__ == "__main__":
 #     t = Tile(50, 50, 50, 50)
 #     print(t)
