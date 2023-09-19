@@ -1,5 +1,12 @@
 import pygame
-from typing import Optional, Tuple
+
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
+DARK_RED = (150, 30, 30)
+TILE1 = (0, 51, 102)
 
 
 class Tile(pygame.Rect):  # type: ignore
@@ -9,14 +16,17 @@ class Tile(pygame.Rect):  # type: ignore
 
     def __init__(self, *args: int, **kwargs: int) -> None:
         super().__init__(*args, **kwargs)
+        self.enabled = False
 
-    def draw(
-        self,
-        surface: pygame.surface.Surface,
-        color: Tuple[int, int, int],  # RGB
-        width: Optional[int] = 0,
-    ) -> None:
-        pygame.draw.rect(surface, color, self, width)
+    def create(self, surface: pygame.surface.Surface) -> None:
+        pygame.draw.rect(surface, TILE1, self)  # 채우기
+        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+        self.enabled = True  # 생성됬다고 표시
+
+    def destroy(self, surface: pygame.surface.Surface) -> None:
+        pygame.draw.rect(surface, BLACK, self)  # 검은색으로 -> 배경
+        pygame.draw.rect(surface, WHITE, self, 2)  # 외곽선은 그대로
+        self.enabled = False  # 파괴됬다고 표시
 
 
 # if __name__ == "__main__":

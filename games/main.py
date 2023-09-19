@@ -28,8 +28,8 @@ screen.fill(BLACK)
 pygame.draw.line(screen, WHITE, (0, 600), (600, 600), 5)
 
 # 타일 프레임 그리기
-r1 = Tile(50, 50, 500, 500)
-r1.draw(screen, RED, 10)
+# r1 = Tile(50, 50, 500, 500)
+# r1.draw(screen, RED, 10)
 
 
 # 타일 그리기
@@ -41,8 +41,7 @@ for i in range(5):
 for i in range(5):
     for j in range(5):
         target_tile = tiles[i][j]
-        tiles[i][j].draw(screen, TILE1)
-        tiles[i][j].draw(screen, WHITE, 2)
+        target_tile.create(screen)
 
 while not game_over:
     for event in pygame.event.get():
@@ -52,9 +51,8 @@ while not game_over:
             x, y = pygame.mouse.get_pos()
             if 50 <= x <= 550 and 50 <= y <= 550:
                 target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
-                target_tile.draw(screen, DARK_RED)
-                target_tile.draw(screen, WHITE, 2)
-                print(x, y)
+                target_tile.destroy(screen)
+                print(x, y, target_tile.enabled)
             else:
                 print(x, y)
                 print("바깥쪽")
