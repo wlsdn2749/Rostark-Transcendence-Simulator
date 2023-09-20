@@ -1,11 +1,12 @@
 import pygame
 import sys
 import os
+from collections import deque
 from typing import List
 
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from pakeages.gameobject import Tile  # noqa: E402
+from pakeages.gameobject import Tile, Slot  # noqa: E402
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -36,12 +37,29 @@ pygame.draw.line(screen, WHITE, (0, 600), (600, 600), 5)
 tiles: List[Tile] = [[] * 5 for _ in range(5)]
 for i in range(5):
     for j in range(5):
-        tiles[i].append(Tile(50 + i * 100, 50 + j * 100, 100, 100))
+        tiles[i].append(Tile(50 + i * 100, 50 + j * 100, 100, 100))  # 위치 지정
 
 for i in range(5):
     for j in range(5):
         target_tile = tiles[i][j]
         target_tile.create(screen)
+
+# 정령 보관 슬롯 그리기
+slots: List[Slot] = []
+slots.append(Slot(300, 625, 100, 125))  # 300, 625 ~ 350, 775
+slots.append(Slot(425, 625, 100, 125))  # 300, 625 ~ 350, 775
+slots[0].create(screen)
+slots[1].create(screen)
+
+# 다음 정령 슬롯 그리기
+
+next_slots: deque[Slot] = deque()
+next_slots.appendleft(Slot(50, 700, 60, 75))
+next_slots.appendleft(Slot(125, 700, 60, 75))
+next_slots.appendleft(Slot(200, 700, 60, 75))
+next_slots[0].create(screen)
+next_slots[1].create(screen)
+next_slots[2].create(screen)
 
 while not game_over:
     for event in pygame.event.get():

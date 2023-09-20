@@ -39,6 +39,19 @@ class Card(Element):
         super().__init__()
 
 
+class Slot(pygame.Rect):  # type: ignore
+    """
+    Class to store two elements
+    """
+
+    def __init__(self, *args: int, **kwargs: int) -> None:
+        super().__init__(*args, **kwargs)
+
+    def create(self, surface: pygame.surface.Surface) -> None:
+        # pygame.draw.rect(surface, TILE1, self)  # 채우기
+        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+
+
 # if __name__ == "__main__":
 #     t = Tile(50, 50, 50, 50)
 #     print(t)
