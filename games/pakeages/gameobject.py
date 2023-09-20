@@ -1,5 +1,5 @@
 import pygame
-
+from typing import Any
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -33,10 +33,37 @@ class Element:
     def __init__(self) -> None:
         pass
 
+    def get_image(self, path: str) -> pygame.Surface:
+        self.image = pygame.image.load(path)
+        return self.image
 
-class Card(Element):
+    def transform(self, width: int, height: int) -> None:
+        self.image = pygame.transform.scale(self.image, (width, height))
+
+
+class ThunderStroke(Element):
     def __init__(self) -> None:
         super().__init__()
+        self.image = self.get_image("./games/images/thunderstroke.jpg")
+
+
+class WaterSpout(Element):
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = self.get_image("./games/images/waterspout.png")
+
+
+class Card:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.element: Any = None
+        self.make()
+
+    def make(self) -> None:
+        if self.name == "thunderstroke":
+            self.element = ThunderStroke()
+        elif self.name == "waterspout":
+            self.element = WaterSpout()
 
 
 class Slot(pygame.Rect):  # type: ignore
@@ -50,6 +77,11 @@ class Slot(pygame.Rect):  # type: ignore
     def create(self, surface: pygame.surface.Surface) -> None:
         # pygame.draw.rect(surface, TILE1, self)  # 채우기
         pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+
+    def assign(self, surface: pygame.surface.Surface, card: Card) -> None:
+        card.element.transform(self.width, self.height)
+        surface.blit(card.element.image, self)
+        self.create(surface)  # 테두리 다시 그려주기
 
 
 # if __name__ == "__main__":

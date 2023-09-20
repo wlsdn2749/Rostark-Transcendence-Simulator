@@ -6,10 +6,11 @@ from typing import List
 
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from pakeages.gameobject import Tile, Slot  # noqa: E402
+from pakeages.gameobject import Tile, Slot, Card  # noqa: E402
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+LIGHT_BLACK = (69, 69, 69)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 DARK_RED = (150, 30, 30)
@@ -24,7 +25,7 @@ pygame.display.set_caption("ROSTARK Transcendence Simulator")
 
 game_over = False
 
-screen.fill(BLACK)
+screen.fill(LIGHT_BLACK)
 # 아래 칸 남겨놓기 (정령, 정령 수납 칸)
 pygame.draw.line(screen, WHITE, (0, 600), (600, 600), 5)
 
@@ -60,6 +61,14 @@ next_slots.appendleft(Slot(200, 700, 60, 75))
 next_slots[0].create(screen)
 next_slots[1].create(screen)
 next_slots[2].create(screen)
+
+# 슬롯에 정령 할당하기
+thunderstroke_card = Card(name="thunderstroke")
+slots[0].assign(screen, thunderstroke_card)
+
+waterspout_card = Card(name="waterspout")
+slots[1].assign(screen, waterspout_card)
+
 
 while not game_over:
     for event in pygame.event.get():
