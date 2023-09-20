@@ -5,6 +5,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
 
@@ -73,15 +74,23 @@ class Slot(pygame.Rect):  # type: ignore
 
     def __init__(self, *args: int, **kwargs: int) -> None:
         super().__init__(*args, **kwargs)
+        self.selected = False
 
     def create(self, surface: pygame.surface.Surface) -> None:
         # pygame.draw.rect(surface, TILE1, self)  # 채우기
-        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+        if not self.selected:
+            pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+        else:
+            pygame.draw.rect(surface, YELLOW, self, 2)  # 노란색으로 Boarding
 
     def assign(self, surface: pygame.surface.Surface, card: Card) -> None:
         card.element.transform(self.width, self.height)
         surface.blit(card.element.image, self)
         self.create(surface)  # 테두리 다시 그려주기
+
+    def toggle_select(self, surface: pygame.surface.Surface) -> None:
+        self.selected = not self.selected
+        self.create(surface)
 
 
 # if __name__ == "__main__":

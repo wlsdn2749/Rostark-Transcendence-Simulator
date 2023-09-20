@@ -47,8 +47,8 @@ for i in range(5):
 
 # 정령 보관 슬롯 그리기
 slots: List[Slot] = []
-slots.append(Slot(300, 625, 100, 125))  # 300, 625 ~ 350, 775
-slots.append(Slot(425, 625, 100, 125))  # 300, 625 ~ 350, 775
+slots.append(Slot(300, 625, 100, 125))  # (300, 625) ~ (400, 750)
+slots.append(Slot(425, 625, 100, 125))  # (425, 625) ~ (525, 750)
 slots[0].create(screen)
 slots[1].create(screen)
 
@@ -76,10 +76,16 @@ while not game_over:
             game_over = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
-            if 50 <= x <= 550 and 50 <= y <= 550:
+            if 50 <= x <= 550 and 50 <= y <= 550:  # Tile Event
                 target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
                 target_tile.destroy(screen)
                 print(x, y, target_tile.enabled)
+            elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
+                slots[0].toggle_select(screen)
+
+            elif 425 <= x <= 525 and 625 <= y <= 725:  # ! Slot 1
+                slots[1].toggle_select(screen)
+
             else:
                 print(x, y)
                 print("바깥쪽")
