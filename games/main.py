@@ -8,6 +8,7 @@ from typing import List
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from pakeages.gameobject import Tile, Slot, Card  # noqa: E402
 
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 LIGHT_BLACK = (69, 69, 69)
@@ -89,6 +90,16 @@ while not game_over:
             else:
                 print(x, y)
                 print("바깥쪽")
+
+    # 슬롯이 골라졌을때 마우스가 타일 위로 올라감을 감지
+    if slots[0].selected or slots[1].selected:
+        mouse_pos = pygame.mouse.get_pos()
+        for i in range(5):
+            for tile in tiles[i]:
+                if tile.collidepoint(mouse_pos):
+                    tile.show(screen, 10)
+                else:
+                    tile.create(screen)
 
     # 그린 선 반영
     pygame.display.update()

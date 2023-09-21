@@ -9,6 +9,9 @@ YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
 
+pygame.font.init()
+font = pygame.font.Font("./games/fonts/HeirofLightRegular.ttf", 25)
+
 
 class Tile(pygame.Rect):  # type: ignore
     """
@@ -28,6 +31,20 @@ class Tile(pygame.Rect):  # type: ignore
         pygame.draw.rect(surface, BLACK, self)  # 검은색으로 -> 배경
         pygame.draw.rect(surface, WHITE, self, 2)  # 외곽선은 그대로
         self.enabled = False  # 파괴됬다고 표시
+
+    def show(self, surface: pygame.surface.Surface, value: int) -> None:
+        # font.render(text, 안티엘리어싱, 색 지정(rgb), 텍스트 배경색(rgb))
+        text_surface = font.render(f"{value}%", True, WHITE)
+
+        # CHATGPT
+        text_width, text_height = text_surface.get_size()
+
+        # Calculate the position to center the text within the rectangle
+        text_x = self.x + (self.width - text_width) // 2
+        text_y = self.y + (self.height - text_height) // 2
+
+        surface.blit(text_surface, (text_x, text_y))
+        # CHATGPT_END
 
 
 class Element:
