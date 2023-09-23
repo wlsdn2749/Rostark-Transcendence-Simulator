@@ -70,7 +70,6 @@ slots[0].assign(screen, thunderstroke_card)
 waterspout_card = Card(name="waterspout")
 slots[1].assign(screen, waterspout_card)
 
-
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -83,24 +82,40 @@ while not game_over:
                 print(x, y, target_tile.enabled)
             elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
                 slots[0].toggle_select(screen)
-
+                if slots[1].selected:
+                    slots[1].toggle_select(screen)
             elif 425 <= x <= 525 and 625 <= y <= 725:  # ! Slot 1
                 slots[1].toggle_select(screen)
+                if slots[0].selected:
+                    slots[0].toggle_select(screen)
 
             else:
                 print(x, y)
                 print("바깥쪽")
 
     # 슬롯이 골라졌을때 마우스가 타일 위로 올라감을 감지
+    effect_range = None
     if slots[0].selected or slots[1].selected:
         mouse_pos = pygame.mouse.get_pos()
-        for i in range(5):
-            for tile in tiles[i]:
-                if tile.collidepoint(mouse_pos):
-                    tile.show(screen, 10)
-                else:
-                    tile.create(screen)
 
+        # 마우스가 특정 타일 위로 올라갔을 경우 특정 타일과 그 인접 타일 위치를 저장
+        for i in range(5):
+            for j in range(5):
+                if tiles[i][j].collidepoint(mouse_pos):
+                    if slots[0].selected:
+                        effect_range = slots[0].card.element.effect_range(i, j)
+                    if slots[1].selected:
+                        effect_range = slots[1].card.element.effect_range(i, j)
+
+                # 모든 타일을 갱신
+                tiles[i][j].create(screen)
+
+        # 표시해야할 타일이 있을 경우 그 위치를 퍼센트 표시
+        if effect_range:
+            for x, y, value in effect_range:
+                if 0 <= x <= 4 and 0 <= y <= 4:
+                    tiles[x][y].show(screen, value)
+                    print(x, y, value)
     # 그린 선 반영
     pygame.display.update()
 
