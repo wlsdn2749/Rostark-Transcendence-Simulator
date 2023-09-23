@@ -9,10 +9,10 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
-TILE_SELECTED = (51, 51, 255)
+TILE_SELECTED = (33, 134, 202)
 
 pygame.font.init()
-font = pygame.font.Font("./games/fonts/HeirofLightRegular.ttf", 25)
+font = pygame.font.Font("./games/fonts/HeirofLightBold.ttf", 25)
 
 
 class Tile(pygame.Rect):  # type: ignore
