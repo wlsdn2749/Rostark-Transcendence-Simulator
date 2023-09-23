@@ -1,5 +1,5 @@
 # 로스트아크 초월 시뮬레이터
-> 로스트아크의 [초월 시스템](!https://lostark.game.onstove.com/GameGuide/Pages/초월#h4-3)의 시뮬레이터를 제작합니다.
+> 로스트아크의 [초월 시스템](https://lostark.game.onstove.com/GameGuide/Pages/초월#h4-3)의 시뮬레이터를 제작합니다.
 > 시뮬레이터 전반적인 개발과 전략적 선택에 도움을 주는 시스템을 개발하고 웹으로 서비스하는 것을 목표로 두고 있습니다.
 
 
