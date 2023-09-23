@@ -9,7 +9,7 @@
    1. [ ] **석판**
         1. [x] 5x5 석판
         2. [ ] 6x6 석판
-        3. [ ] 석판 파괴
+        3. [x] 석판 파괴
         4. [ ] 특수 석판 ( 신비 석판, 왜곡된 고대 석판)
 
    2. [ ] **정령**
@@ -22,7 +22,7 @@
 2. [ ] 강화학습 환경 구축 **(Custom gym 환경 구축)**
    1. [ ] pygame -> custom gym env packing
 3. [ ] 웹 서비스 **( Public Release )**
-4. [ ] 강화학습 **( Sequencial Decision Making )**
+4. [ ] 강화학습 **( Sequential Decision Making )**
    1. [ ] Model-Based
    2. [ ] Model-Free
 

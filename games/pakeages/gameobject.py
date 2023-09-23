@@ -9,6 +9,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
+TILE_SELECTED = (51, 51, 255)
 
 pygame.font.init()
 font = pygame.font.Font("./games/fonts/HeirofLightRegular.ttf", 25)
@@ -22,6 +23,7 @@ class Tile(pygame.Rect):  # type: ignore
     def __init__(self, *args: int, **kwargs: int) -> None:
         super().__init__(*args, **kwargs)
         self.enabled = False
+        self.selected = False
 
     def create(self, surface: pygame.surface.Surface) -> None:
         pygame.draw.rect(surface, TILE1, self)  # 채우기
@@ -35,6 +37,10 @@ class Tile(pygame.Rect):  # type: ignore
 
     def show(self, surface: pygame.surface.Surface, value: int) -> None:
         # font.render(text, 안티엘리어싱, 색 지정(rgb), 텍스트 배경색(rgb))
+
+        pygame.draw.rect(surface, TILE_SELECTED, self)  # TILE_SELECTED으로 Boarding
+        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+
         text_surface = font.render(f"{value}%", True, WHITE)
 
         # CHATGPT
@@ -45,6 +51,7 @@ class Tile(pygame.Rect):  # type: ignore
         text_y = self.y + (self.height - text_height) // 2
 
         surface.blit(text_surface, (text_x, text_y))
+
         # CHATGPT_END
 
 

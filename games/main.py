@@ -7,6 +7,7 @@ from typing import List
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from pakeages.gameobject import Tile, Slot, Card  # noqa: E402
+from pakeages.random import is_destroy  # noqa : E402
 
 
 WHITE = (255, 255, 255)
@@ -77,9 +78,23 @@ while not game_over:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
             if 50 <= x <= 550 and 50 <= y <= 550:  # Tile Event
-                target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
-                target_tile.destroy(screen)
-                print(x, y, target_tile.enabled)
+                x, y = (x - 50) // 100, (y - 50) // 100
+                if slots[0].selected:
+                    effect_range = slots[0].card.element.effect_range(x, y)
+                if slots[1].selected:
+                    effect_range = slots[1].card.element.effect_range(x, y)
+
+                if effect_range:
+                    for x, y, value in effect_range:
+                        if 0 <= x <= 4 and 0 <= y <= 4:
+                            if tiles[x][y].enabled:
+                                if is_destroy(value):
+                                    tiles[x][y].destroy(screen)
+
+                # target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
+                # target_tile.destroy(screen)
+
+                # print(x, y, value, tiles[x][y].enabled)
             elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
                 slots[0].toggle_select(screen)
                 if slots[1].selected:
@@ -101,21 +116,26 @@ while not game_over:
         # 마우스가 특정 타일 위로 올라갔을 경우 특정 타일과 그 인접 타일 위치를 저장
         for i in range(5):
             for j in range(5):
-                if tiles[i][j].collidepoint(mouse_pos):
+                if tiles[i][j].collidepoint(mouse_pos) and tiles[i][j].enabled:
                     if slots[0].selected:
                         effect_range = slots[0].card.element.effect_range(i, j)
                     if slots[1].selected:
                         effect_range = slots[1].card.element.effect_range(i, j)
 
                 # 모든 타일을 갱신
-                tiles[i][j].create(screen)
+                if tiles[i][j].enabled:
+                    tiles[i][j].create(screen)
+                else:
+                    tiles[i][j].destroy(screen)
 
         # 표시해야할 타일이 있을 경우 그 위치를 퍼센트 표시
         if effect_range:
             for x, y, value in effect_range:
                 if 0 <= x <= 4 and 0 <= y <= 4:
-                    tiles[x][y].show(screen, value)
-                    print(x, y, value)
+                    if tiles[x][y].enabled:
+                        tiles[x][y].show(screen, value)
+                        print(x, y, value)
+
     # 그린 선 반영
     pygame.display.update()
 
