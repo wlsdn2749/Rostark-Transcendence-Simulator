@@ -11,7 +11,11 @@ YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
 TILE_SELECTED = (33, 134, 202)
-BUTTON_REPLACE = (118, 30, 128)
+BUTTON_REPLACE = (75, 48, 49)  # Dark Purple
+
+# # Dirt Yellow (94, 95, 65)
+
+# Light Purple (118, 30, 128)
 
 pygame.font.init()
 font = pygame.font.Font("./games/fonts/HeirofLightBold.ttf", 25)
