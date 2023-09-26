@@ -103,19 +103,22 @@ while not game_over:
             x, y = pygame.mouse.get_pos()
             if 50 <= x <= 550 and 50 <= y <= 550:  # Tile Event
                 x, y = (x - 50) // 100, (y - 50) // 100
-                if slots[0].selected:
-                    effect_range = slots[0].card.element.effect_range(x, y)
-                    main_slot_assign(slots[0])
-                elif slots[1].selected:
-                    effect_range = slots[1].card.element.effect_range(x, y)
-                    main_slot_assign(slots[1])
+                if tiles[x][y].enabled:
+                    if slots[0].selected:
+                        effect_range = slots[0].card.element.effect_range(x, y)
+                        main_slot_assign(slots[0])
+                        slots[0].toggle_select(screen)
+                    elif slots[1].selected:
+                        effect_range = slots[1].card.element.effect_range(x, y)
+                        main_slot_assign(slots[1])
+                        slots[1].toggle_select(screen)
 
-                if effect_range:
-                    for x, y, value in effect_range:
-                        if 0 <= x <= 4 and 0 <= y <= 4:
-                            if tiles[x][y].enabled:
-                                if is_destroy(value):
-                                    tiles[x][y].destroy(screen)
+                    if effect_range:
+                        for x, y, value in effect_range:
+                            if 0 <= x <= 4 and 0 <= y <= 4:
+                                if tiles[x][y].enabled:
+                                    if is_destroy(value):
+                                        tiles[x][y].destroy(screen)
 
             elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
                 slots[0].toggle_select(screen)

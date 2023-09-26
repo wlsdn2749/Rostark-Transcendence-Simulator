@@ -105,7 +105,8 @@ class Slot(pygame.Rect):  # type: ignore
 
 class Sequence:
     def __init__(self) -> None:
-        self.next_slots = random_slots_element_init()  # list 여기 Sequence가 담겨있음
+        self.next_slots = random_slots_element_init(init_value=50)
+        # 여기 Sequence가 담겨있음
         print(self.next_slots)
 
     def pop(self) -> Any:  # 정령이 리턴
