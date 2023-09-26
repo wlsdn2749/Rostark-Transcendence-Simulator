@@ -3,12 +3,12 @@
 > 시뮬레이터 전반적인 개발과 전략적 선택에 도움을 주는 시스템을 개발하고 웹으로 서비스하는 것을 목표로 두고 있습니다.
 
 
-## 정보
-[로스트아크 초월 가이드](https://www.inven.co.kr/board/lostark/4821/93946)
-[초월정보 #1](https://www.inven.co.kr/board/lostark/4821/93946)
-[초월정보 #2](https://www.inven.co.kr/board/lostark/4821/94174)
+## ℹ️ 정보
+[로스트아크 초월 가이드 (공홈)](https://www.inven.co.kr/board/lostark/4821/93946)<br>
+[초월정보 #1 (인벤)](https://www.inven.co.kr/board/lostark/4821/93946)<br>
+[초월정보 #2 (인벤)](https://www.inven.co.kr/board/lostark/4821/94174)<br>
 
-를 참고해서 만들었습니다. 감사합니다
+참고해서 만들었습니다. 감사합니다
 
 ## ✅ 개발 상태
 1. [ ] 초월 시스템 구축 **( 시뮬레이터 )**

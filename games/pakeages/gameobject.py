@@ -11,9 +11,39 @@ YELLOW = (255, 255, 0)
 DARK_RED = (150, 30, 30)
 TILE1 = (0, 51, 102)
 TILE_SELECTED = (33, 134, 202)
+BUTTON_REPLACE = (118, 30, 128)
 
 pygame.font.init()
 font = pygame.font.Font("./games/fonts/HeirofLightBold.ttf", 25)
+font_1 = pygame.font.Font("./games/fonts/HeirofLightBold.ttf", 15)
+
+
+class Button(pygame.Rect):  # type: ignore
+    def __init__(self, *args: int, **kwargs: int) -> None:
+        super().__init__(*args, **kwargs)
+
+    def create(self, surface: pygame.surface.Surface) -> None:
+        pygame.draw.rect(surface, BUTTON_REPLACE, self)  # 채우기
+        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+        self.show(surface=surface)
+
+    def show(self, surface: pygame.surface.Surface) -> None:
+        # font.render(text, 안티엘리어싱, 색 지정(rgb), 텍스트 배경색(rgb))
+
+        pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
+
+        text_surface = font_1.render("정령 교체", True, WHITE)
+
+        # CHATGPT
+        text_width, text_height = text_surface.get_size()
+
+        # Calculate the position to center the text within the rectangle
+        text_x = self.x + (self.width - text_width) // 2
+        text_y = self.y + (self.height - text_height) // 2
+
+        surface.blit(text_surface, (text_x, text_y))
+
+        # CHATGPT_END
 
 
 class Tile(pygame.Rect):  # type: ignore

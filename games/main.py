@@ -6,7 +6,7 @@ from typing import List
 
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from pakeages.gameobject import Tile, Slot, Card, Sequence  # noqa: E402
+from pakeages.gameobject import Tile, Slot, Card, Sequence, Button  # noqa: E402
 from pakeages.random import is_destroy  # noqa : E402
 
 
@@ -34,6 +34,12 @@ pygame.draw.line(screen, WHITE, (0, 600), (600, 600), 5)
 # 타일 프레임 그리기
 # r1 = Tile(50, 50, 500, 500)
 # r1.draw(screen, RED, 10)
+
+# 정령 교체 버튼 그리기
+element_replace_button_0 = Button(300, 765, 100, 25)
+element_replace_button_1 = Button(425, 765, 100, 25)
+element_replace_button_0.create(screen)
+element_replace_button_1.create(screen)
 
 
 # 타일 그리기
