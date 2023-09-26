@@ -6,7 +6,7 @@ from typing import List
 
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from pakeages.gameobject import Tile, Slot, Card  # noqa: E402
+from pakeages.gameobject import Tile, Slot, Card, Next_Slot  # noqa: E402
 from pakeages.random import is_destroy  # noqa : E402
 
 
@@ -54,7 +54,7 @@ slots.append(Slot(425, 625, 100, 125))  # (425, 625) ~ (525, 750)
 slots[0].create(screen)
 slots[1].create(screen)
 
-# 다음 정령 슬롯 그리기
+# # 다음 정령 슬롯 그리기
 
 next_slots: deque[Slot] = deque()
 next_slots.appendleft(Slot(50, 700, 60, 75))
@@ -64,12 +64,19 @@ next_slots[0].create(screen)
 next_slots[1].create(screen)
 next_slots[2].create(screen)
 
-# 슬롯에 정령 할당하기
-thunderstroke_card = Card(name="thunderstroke")
-slots[0].assign(screen, thunderstroke_card)
+# # 슬롯에 정령 할당하기
+# thunderstroke_card = Card(name="thunderstroke")
+# slots[0].assign(screen, thunderstroke_card)
 
-waterspout_card = Card(name="waterspout")
-slots[1].assign(screen, waterspout_card)
+# waterspout_card = Card(name="waterspout")
+# slots[1].assign(screen, waterspout_card)
+
+next_slot = Next_Slot()
+# print(next_slot.next_slots)
+card1 = Card(element=next_slot.pop())
+card2 = Card(element=next_slot.pop())
+slots[0].assign(screen, card1)
+slots[1].assign(screen, card2)
 
 while not game_over:
     for event in pygame.event.get():

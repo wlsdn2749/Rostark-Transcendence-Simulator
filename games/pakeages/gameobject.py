@@ -1,6 +1,7 @@
 import pygame
-from typing import Any
+from typing import Any, Optional
 from pakeages.element import ThunderStroke, WaterSpout  # noqa: E402
+from pakeages.random import get_all_elements
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -56,9 +57,9 @@ class Tile(pygame.Rect):  # type: ignore
 
 
 class Card:
-    def __init__(self, name: str) -> None:
+    def __init__(self, element: Optional[Any], name: Optional[str] = None) -> None:
         self.name = name
-        self.element: Any = None
+        self.element: Any = element() if element is not None else element
         self.make()
 
     def make(self) -> None:
@@ -66,6 +67,8 @@ class Card:
             self.element = ThunderStroke()
         elif self.name == "waterspout":
             self.element = WaterSpout()
+        else:
+            pass
 
 
 class Slot(pygame.Rect):  # type: ignore
@@ -93,6 +96,15 @@ class Slot(pygame.Rect):  # type: ignore
     def toggle_select(self, surface: pygame.surface.Surface) -> None:
         self.selected = not self.selected
         self.create(surface)
+
+
+class Next_Slot:
+    def __init__(self) -> None:
+        self.next_slots = get_all_elements()  # 여기 Sequence가 담겨있음
+        print(self.next_slots)
+
+    def pop(self) -> Any:  # 정령이 리턴
+        return self.next_slots.pop(0)  # 첫번쨰 Sequence에서 pop함.
 
 
 # if __name__ == "__main__":

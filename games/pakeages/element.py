@@ -1,4 +1,6 @@
+from typing import Any
 import pygame
+import inspect
 
 dx = [1, 0, -1, 0]
 dy = [0, 1, 0, -1]
@@ -52,3 +54,19 @@ class WaterSpout(Element):
             )  # 상하좌우 한칸씩 50%
 
         return range_list
+
+
+def get_all_elements() -> list[Any]:
+    current_module = inspect.getmodule(inspect.currentframe())
+    elements = []
+    for name, obj in inspect.getmembers(current_module):
+        if inspect.isclass(obj) and obj.__name__ != "Element":
+            elements.append(obj)
+
+    return elements
+
+
+# if __name__ == "__main__":
+#     cls = get_all_elements()
+#     for c in cls:
+#         print(c.__name__, c)
