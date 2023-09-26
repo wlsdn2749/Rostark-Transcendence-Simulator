@@ -1,7 +1,7 @@
 import pygame
 from typing import Any, Optional
 from pakeages.element import ThunderStroke, WaterSpout  # noqa: E402
-from pakeages.random import get_all_elements
+from pakeages.random import random_slots_element_init
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -73,7 +73,7 @@ class Card:
 
 class Slot(pygame.Rect):  # type: ignore
     """
-    Class to store two elements
+    Class to store elements
     """
 
     def __init__(self, *args: int, **kwargs: int) -> None:
@@ -97,10 +97,15 @@ class Slot(pygame.Rect):  # type: ignore
         self.selected = not self.selected
         self.create(surface)
 
+    def refresh(self, surface: pygame.surface.Surface) -> None:
+        self.card.element.transform(self.width, self.height)
+        surface.blit(self.card.element.image, self)
+        self.create(surface)  # 테두리 다시 그려주기
 
-class Next_Slot:
+
+class Sequence:
     def __init__(self) -> None:
-        self.next_slots = get_all_elements()  # 여기 Sequence가 담겨있음
+        self.next_slots = random_slots_element_init()  # list 여기 Sequence가 담겨있음
         print(self.next_slots)
 
     def pop(self) -> Any:  # 정령이 리턴

@@ -6,7 +6,7 @@ from typing import List
 
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from pakeages.gameobject import Tile, Slot, Card, Next_Slot  # noqa: E402
+from pakeages.gameobject import Tile, Slot, Card, Sequence  # noqa: E402
 from pakeages.random import is_destroy  # noqa : E402
 
 
@@ -47,6 +47,9 @@ for i in range(5):
         target_tile = tiles[i][j]
         target_tile.create(screen)
 
+
+# ---- 정령 보관 슬롯 init ----
+
 # 정령 보관 슬롯 그리기
 slots: List[Slot] = []
 slots.append(Slot(300, 625, 100, 125))  # (300, 625) ~ (400, 750)
@@ -54,29 +57,43 @@ slots.append(Slot(425, 625, 100, 125))  # (425, 625) ~ (525, 750)
 slots[0].create(screen)
 slots[1].create(screen)
 
-# # 다음 정령 슬롯 그리기
-
+# 다음 정령 보관슬롯 그리기
 next_slots: deque[Slot] = deque()
-next_slots.appendleft(Slot(50, 700, 60, 75))
-next_slots.appendleft(Slot(125, 700, 60, 75))
-next_slots.appendleft(Slot(200, 700, 60, 75))
+next_slots.append(Slot(200, 700, 60, 75))  # 0
+next_slots.append(Slot(125, 700, 60, 75))  # 1
+next_slots.append(Slot(50, 700, 60, 75))  # 2
+
 next_slots[0].create(screen)
 next_slots[1].create(screen)
 next_slots[2].create(screen)
 
 # # 슬롯에 정령 할당하기
-# thunderstroke_card = Card(name="thunderstroke")
-# slots[0].assign(screen, thunderstroke_card)
+seq = Sequence()
+for i in range(2):
+    slots[i].assign(screen, Card(element=seq.pop()))
 
-# waterspout_card = Card(name="waterspout")
-# slots[1].assign(screen, waterspout_card)
+for i in range(3):
+    next_slots[i].assign(screen, Card(element=seq.pop()))
 
-next_slot = Next_Slot()
-# print(next_slot.next_slots)
-card1 = Card(element=next_slot.pop())
-card2 = Card(element=next_slot.pop())
-slots[0].assign(screen, card1)
-slots[1].assign(screen, card2)
+
+# ---- 정령 보관 슬롯 End ----
+def next_slots_pop() -> Slot:
+    new_card = Card(element=seq.pop())
+    next_card = next_slots[0].card
+
+    for i in range(2):
+        next_slots[i].assign(screen, next_slots[i + 1].card)
+
+    next_slots[2].assign(screen, new_card)
+
+    return next_card
+
+
+def main_slot_assign(slot: Slot) -> None:
+    next_card = next_slots_pop()
+    slot.assign(screen, next_card)
+    pygame.display.update()
+
 
 while not game_over:
     for event in pygame.event.get():
@@ -88,8 +105,10 @@ while not game_over:
                 x, y = (x - 50) // 100, (y - 50) // 100
                 if slots[0].selected:
                     effect_range = slots[0].card.element.effect_range(x, y)
-                if slots[1].selected:
+                    main_slot_assign(slots[0])
+                elif slots[1].selected:
                     effect_range = slots[1].card.element.effect_range(x, y)
+                    main_slot_assign(slots[1])
 
                 if effect_range:
                     for x, y, value in effect_range:
@@ -98,10 +117,6 @@ while not game_over:
                                 if is_destroy(value):
                                     tiles[x][y].destroy(screen)
 
-                # target_tile = tiles[(x - 50) // 100][(y - 50) // 100]
-                # target_tile.destroy(screen)
-
-                # print(x, y, value, tiles[x][y].enabled)
             elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
                 slots[0].toggle_select(screen)
                 if slots[1].selected:
@@ -141,7 +156,7 @@ while not game_over:
                 if 0 <= x <= 4 and 0 <= y <= 4:
                     if tiles[x][y].enabled:
                         tiles[x][y].show(screen, value)
-                        print(x, y, value)
+                        # print(x, y, value)
 
     # 그린 선 반영
     pygame.display.update()
