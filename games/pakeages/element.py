@@ -23,6 +23,7 @@ class Element:
 
 class ThunderStroke(Element):
     """
+    - 이름 : 낙뢰
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**, 가로 세로 1칸 50% **타격**
     """
@@ -42,6 +43,7 @@ class ThunderStroke(Element):
 
 class WaterSpout(Element):
     """
+    - 이름 : 용오름
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**, 대각선 1칸 50% **타격**
     """
@@ -62,6 +64,7 @@ class WaterSpout(Element):
 
 class HellFire(Element):
     """
+    - 이름 : 업화
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**, 대각선 1칸 50% **타격** 가로 세로 2칸씩 50% 타격
     """
@@ -88,6 +91,7 @@ class HellFire(Element):
 
 class BigExplosion(Element):
     """
+    - 이름 : 대폭발
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**
     - 선택한 지점 기준대각선 모두 타격
@@ -115,6 +119,7 @@ class BigExplosion(Element):
 
 class RainStorm(Element):
     """
+    - 이름 : 폭풍우
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**
     - 선택한 지점 기준대각선 모두 타격
@@ -139,6 +144,7 @@ class RainStorm(Element):
 
 class Tsunami(Element):
     """
+    - 이름 : 해일
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**
     - 선택한 지점 기준 가로 세로 모두 타격
@@ -163,6 +169,7 @@ class Tsunami(Element):
 
 class Earthquakes(Element):
     """
+    - 이름 : 지진
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**
     - 선택한 지점 기준 가로
@@ -187,6 +194,7 @@ class Earthquakes(Element):
 
 class Shockwave(Element):
     """
+    - 이름 : 충격파
     - 등급 : 일반
     - 효과 : 선택한 석판 100% **타격**
     - 대각선 1칸 75% **타격** 가로 세로 1칸씩 75% 타격
@@ -198,13 +206,33 @@ class Shockwave(Element):
 
     def effect_range(self, x: int, y: int) -> list[tuple[int, int, int]]:
         range_list = list()
-        range_list.append((x, y, 100))  # 상하좌우 100%
+        range_list.append((x, y, 100))  # 지점 100%
         for i in range(4):
             range_list.append((x + diagonal_x[i], y + diagonal_y[i], 75))
-            # 대각선 한칸씩 50%
+            # 대각선 한칸씩 75%
 
             range_list.append((x + dx[i], y + dy[i], 75))
-            # 상하좌우 한칸씩 50%
+            # 상하좌우 한칸씩 75%
+
+        return range_list
+
+
+class Eruption(Element):
+    """
+    - 이름 : 분출
+    - 등급 : 일반
+    - 효과 : 선택한 석판 100% **타격**
+    - "정령이 머무른 석판: 신비" 파괴시 일정 확률로 등장
+    - 강화되지 않는 정령효과
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = self.get_image("./games/images/eruption.jpg")
+
+    def effect_range(self, x: int, y: int) -> list[tuple[int, int, int]]:
+        range_list = list()
+        range_list.append((x, y, 100))  # 100%
 
         return range_list
 

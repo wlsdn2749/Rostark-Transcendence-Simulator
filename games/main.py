@@ -36,8 +36,8 @@ pygame.draw.line(screen, WHITE, (0, 600), (600, 600), 5)
 # r1.draw(screen, RED, 10)
 
 # 정령 교체 버튼 그리기
-element_replace_button_0 = Button(300, 765, 100, 25)
-element_replace_button_1 = Button(425, 765, 100, 25)
+element_replace_button_0 = Button(300, 765, 100, 25)  # 300~400, 765~790
+element_replace_button_1 = Button(425, 765, 100, 25)  # 425~525, 765~790
 element_replace_button_0.create(screen)
 element_replace_button_1.create(screen)
 
@@ -134,6 +134,12 @@ while not game_over:
                 slots[1].toggle_select(screen)
                 if slots[0].selected:
                     slots[0].toggle_select(screen)
+
+            elif 300 <= x <= 400 and 765 <= y <= 790:
+                main_slot_assign(slots[0])  # 첫번쨰 슬롯 교체
+
+            elif 425 <= x <= 525 and 765 <= y <= 790:
+                main_slot_assign(slots[1])  # 두번째 슬롯 교체
 
             else:
                 print(x, y)
