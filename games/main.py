@@ -107,7 +107,7 @@ while not game_over:
             game_over = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
-            if 50 <= x <= 550 and 50 <= y <= 550:  # Tile Event
+            if 50 <= x <= 550 and 50 <= y <= 550:  # ! Tile Click Event
                 x, y = (x - 50) // 100, (y - 50) // 100
                 if tiles[x][y].enabled:
                     if slots[0].selected:
@@ -136,10 +136,10 @@ while not game_over:
                     slots[0].toggle_select(screen)
 
             elif 300 <= x <= 400 and 765 <= y <= 790:
-                main_slot_assign(slots[0])  # 첫번쨰 슬롯 교체
+                main_slot_assign(slots[0])  # ! 첫번쨰 슬롯 교체
 
             elif 425 <= x <= 525 and 765 <= y <= 790:
-                main_slot_assign(slots[1])  # 두번째 슬롯 교체
+                main_slot_assign(slots[1])  # ! 두번째 슬롯 교체
 
             else:
                 print(x, y)

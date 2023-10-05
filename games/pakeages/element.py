@@ -217,6 +217,34 @@ class Shockwave(Element):
         return range_list
 
 
+class Yggdrasil_resonance(Element):
+    """
+    - 이름 : 세계수의 공명
+    - 등급 : 일반
+    - 효과 : 선택한 석판 100% **타격**
+    - 가로 세로 2칸씩 100% 타격
+    - "정령이 머무른 석판: 신비" 파괴시 일정 확률로 등장
+    - 강화되지 않는 정령효과
+    - "왜곡된 고대 석판"의 효과를 무시하고 파괴가능
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = self.get_image("./games/images/yggdrasil_resonance.jpeg")
+
+    def effect_range(self, x: int, y: int) -> list[tuple[int, int, int]]:
+        range_list = list()
+        range_list.append((x, y, 100))  # 지점 100%
+        for i in range(4):
+            range_list.append((x + dx[i], y + dy[i], 100))
+            # 상하좌우 한칸씩 100%
+
+            range_list.append((x + 2 * dx[i], y + 2 * dy[i], 100))
+            # 상하좌우 두칸씩 100%
+
+        return range_list
+
+
 class Eruption(Element):
     """
     - 이름 : 분출
