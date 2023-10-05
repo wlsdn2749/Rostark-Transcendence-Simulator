@@ -3,7 +3,7 @@ import pygame
 import inspect
 
 dy = [1, 0, -1, 0]
-dx = [0, 1, 0, -1]
+dx = [0, 1, 0, -1]  # 0: 아래쪽(남), 1: 오른쪽(동), 2: 위쪽(북), 3: 왼쪽(서)
 
 diagonal_y = [-1, 1, -1, 1]  # 대각선 x : 1, 5, 7, 11
 diagonal_x = [-1, 1, 1, -1]  # 대각선 y : 1, 5, 7, 11
@@ -261,6 +261,27 @@ class Eruption(Element):
     def effect_range(self, x: int, y: int) -> list[tuple[int, int, int]]:
         range_list = list()
         range_list.append((x, y, 100))  # 100%
+
+        return range_list
+
+
+class Cleanse(Element):
+    """
+    - 이름 : 정화
+    - 등급 : 일반
+    - 효과 : 선택한 석판 100% **타격**, 양 옆 석판 50% 파괴
+    - "왜곡된 고대 석판"의 효과를 무시하고 파괴가능
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = self.get_image("./games/images/cleanse.jpg")
+
+    def effect_range(self, x: int, y: int) -> list[tuple[int, int, int]]:
+        range_list = list()
+        range_list.append((x, y, 100))  # 100%
+        for i in [1, 3]:
+            range_list.append((x + dx[i], y + dy[i], 50))  # 양 옆 50%
 
         return range_list
 
