@@ -1,7 +1,7 @@
 import pygame
-from typing import Any, Optional
-from pakeages.element import ThunderStroke, WaterSpout  # noqa: E402
-from pakeages.random import random_slots_element_init
+from typing import Any, Optional, Union, List
+from games.pakeages.random_object import random_slots_element_init
+from games.pakeages.element import get_all_elements
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -70,13 +70,19 @@ class Tile(pygame.Rect):  # type: ignore
         pygame.draw.rect(surface, WHITE, self, 2)  # 외곽선은 그대로
         self.enabled = False  # 파괴됬다고 표시
 
-    def show(self, surface: pygame.surface.Surface, value: int) -> None:
+    def show(self, surface: pygame.surface.Surface, value: Union[int, str]) -> None:
         # font.render(text, 안티엘리어싱, 색 지정(rgb), 텍스트 배경색(rgb))
 
-        pygame.draw.rect(surface, TILE_SELECTED, self)  # TILE_SELECTED으로 Boarding
+        pygame.draw.rect(surface, TILE_SELECTED, self)  # TILE_SELECTED
         pygame.draw.rect(surface, WHITE, self, 2)  # 하얀색으로 Boarding
 
-        text_surface = font.render(f"{value}%", True, WHITE)
+        if isinstance(value, int):
+            text_surface = font.render(f"{value}%", True, WHITE)
+        elif isinstance(value, str):
+            if value != "?":
+                text_surface = font.render(f"{value}%", True, WHITE)
+            else:
+                text_surface = font.render(f"{value}", True, WHITE)
 
         # CHATGPT
         text_width, text_height = text_surface.get_size()
@@ -97,12 +103,7 @@ class Card:
         self.make()
 
     def make(self) -> None:
-        if self.name == "thunderstroke":
-            self.element = ThunderStroke()
-        elif self.name == "waterspout":
-            self.element = WaterSpout()
-        else:
-            pass
+        pass
 
 
 class Slot(pygame.Rect):  # type: ignore
@@ -125,6 +126,7 @@ class Slot(pygame.Rect):  # type: ignore
         card.element.transform(self.width, self.height)
         self.card: Card = card  # card 등록
         surface.blit(card.element.image, self)
+        self.selected = False
         self.create(surface)  # 테두리 다시 그려주기
 
     def toggle_select(self, surface: pygame.surface.Surface) -> None:
@@ -138,10 +140,25 @@ class Slot(pygame.Rect):  # type: ignore
 
 
 class Sequence:
-    def __init__(self) -> None:
-        self.next_slots = random_slots_element_init(init_value=50)
+    def __init__(self, test: bool = False) -> None:
+        self.elements = get_all_elements()
+        if not test:
+            self.next_slots = random_slots_element_init(
+                init_value=50, elements=self.elements
+            )
+        else:
+            self.next_slots = self.test_elements(init_value=50)
         # 여기 Sequence가 담겨있음
         print(self.next_slots)
+
+    def test_elements(self, init_value: int) -> List[Any]:
+        li = []
+        for _ in range(init_value):
+            for item in self.elements:
+                if item.__name__ == "LightningBolt":
+                    li.append(item)
+
+        return li
 
     def pop(self) -> Any:  # 정령이 리턴
         return self.next_slots.pop(0)  # 첫번쨰 Sequence에서 pop함.

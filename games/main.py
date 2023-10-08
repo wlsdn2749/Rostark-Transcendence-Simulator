@@ -7,7 +7,7 @@ from typing import List
 # 절대 경로 참조
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from pakeages.gameobject import Tile, Slot, Card, Sequence, Button  # noqa: E402
-from pakeages.random import is_destroy  # noqa : E402
+from pakeages.random_object import is_destroy, is_create  # noqa : E402
 
 
 WHITE = (255, 255, 255)
@@ -75,6 +75,8 @@ next_slots[2].create(screen)
 
 # # 슬롯에 정령 할당하기
 seq = Sequence()
+# Test
+# seq = Sequence(test=True)
 for i in range(2):
     slots[i].assign(screen, Card(element=seq.pop()))
 
@@ -97,8 +99,20 @@ def next_slots_pop() -> Slot:
 
 def main_slot_assign(slot: Slot) -> None:
     next_card = next_slots_pop()
-    slot.assign(screen, next_card)
+    slot.assign(screen, next_card)  # select도 꺼짐
     pygame.display.update()
+
+
+# 현재 모든 타일의 정보를 담고 있는 타일을 리턴 -> tiles: List[Tile]
+def get_info_all_tiles() -> List[Tile]:
+    return tiles
+
+
+def tile_state_update(i: int, j: int) -> None:
+    if tiles[i][j].enabled:
+        tiles[i][j].create(screen)
+    else:
+        tiles[i][j].destroy(screen)
 
 
 while not game_over:
@@ -110,21 +124,58 @@ while not game_over:
             if 50 <= x <= 550 and 50 <= y <= 550:  # ! Tile Click Event
                 x, y = (x - 50) // 100, (y - 50) // 100
                 if tiles[x][y].enabled:
-                    if slots[0].selected:
-                        effect_range = slots[0].card.element.effect_range(x, y)
-                        main_slot_assign(slots[0])
-                        slots[0].toggle_select(screen)
-                    elif slots[1].selected:
-                        effect_range = slots[1].card.element.effect_range(x, y)
-                        main_slot_assign(slots[1])
-                        slots[1].toggle_select(screen)
+                    # 벼락 아닐때
+                    if slots[0].card.element.__class__.__name__ != "LightningBolt":
+                        if slots[0].selected:
+                            effect_range = slots[0].card.element.effect_range(x, y)
+                            main_slot_assign(slots[0])
+                        elif slots[1].selected:
+                            effect_range = slots[1].card.element.effect_range(x, y)
+                            main_slot_assign(slots[1])
 
-                    if effect_range:
-                        for x, y, value in effect_range:
-                            if 0 <= x <= 4 and 0 <= y <= 4:
-                                if tiles[x][y].enabled:
-                                    if is_destroy(value):
-                                        tiles[x][y].destroy(screen)
+                        if effect_range:
+                            for x, y, value in effect_range:
+                                if 0 <= x <= 4 and 0 <= y <= 4:
+                                    if tiles[x][y].enabled:
+                                        if is_destroy(value):
+                                            tiles[x][y].destroy(screen)
+                    # 벼락 일때
+                    if slots[0].card.element.__class__.__name__ == "LightningBolt":
+                        if slots[0].selected:
+                            (
+                                effect_range,
+                                break_effect_range,
+                                restore_effect_range,
+                            ) = slots[0].card.element.effect_range(
+                                x, y, get_info_all_tiles()
+                            )
+                            main_slot_assign(slots[0])
+                        elif slots[1].selected:
+                            (
+                                effect_range,
+                                break_effect_range,
+                                restore_effect_range,
+                            ) = slots[1].card.element.effect_range(
+                                x, y, get_info_all_tiles()
+                            )
+                            main_slot_assign(slots[1])
+
+                        if break_effect_range:  # 제거
+                            for x, y, value in break_effect_range:
+                                if 0 <= x <= 4 and 0 <= y <= 4:
+                                    if tiles[x][y].enabled:
+                                        if is_destroy(value):
+                                            tiles[x][y].destroy(screen)
+                                            print(x, y, "break")
+
+                        if restore_effect_range:  # 후 생성
+                            for x, y, value in restore_effect_range:
+                                if 0 <= x <= 4 and 0 <= y <= 4:
+                                    if not tiles[x][y].enabled:
+                                        if is_create(value):
+                                            tiles[x][y].create(screen)
+                                            print(x, y, "restore")
+                    # tile_state_update()
 
             elif 300 <= x <= 400 and 625 <= y <= 725:  # ! Slot 0
                 slots[0].toggle_select(screen)
@@ -145,8 +196,17 @@ while not game_over:
                 print(x, y)
                 print("바깥쪽")
 
+            # tile state update
+            for i in range(5):
+                for j in range(5):
+                    tile_state_update(i, j)
+
     # 슬롯이 골라졌을때 마우스가 타일 위로 올라감을 감지
+    # dummy not to occur Nameerror
     effect_range = None
+    break_effect_range = None
+    restore_effect_range = None
+
     if slots[0].selected or slots[1].selected:
         mouse_pos = pygame.mouse.get_pos()
 
@@ -155,15 +215,26 @@ while not game_over:
             for j in range(5):
                 if tiles[i][j].collidepoint(mouse_pos) and tiles[i][j].enabled:
                     if slots[0].selected:
-                        effect_range = slots[0].card.element.effect_range(i, j)
-                    if slots[1].selected:
-                        effect_range = slots[1].card.element.effect_range(i, j)
+                        if (
+                            slots[0].card.element.__class__.__name__ != "LightningBolt"
+                        ):  # 벼락아니면 현재 블럭의 정보를 넘겨줄 필요가 없음
+                            effect_range = slots[0].card.element.effect_range(i, j)
+                        else:
+                            effect_range, _, _ = slots[0].card.element.effect_range(
+                                i, j, get_info_all_tiles()
+                            )
 
-                # 모든 타일을 갱신
-                if tiles[i][j].enabled:
-                    tiles[i][j].create(screen)
-                else:
-                    tiles[i][j].destroy(screen)
+                    elif slots[1].selected:
+                        if (
+                            slots[1].card.element.__class__.__name__ != "LightningBolt"
+                        ):  # 벼락아니면 현재 블럭의 정보를 넘겨줄 필요가 없음
+                            effect_range = slots[1].card.element.effect_range(i, j)
+                        else:
+                            effect_range, _, _ = slots[1].card.element.effect_range(
+                                i, j, get_info_all_tiles()
+                            )
+
+                tile_state_update(i, j)
 
         # 표시해야할 타일이 있을 경우 그 위치를 퍼센트 표시
         if effect_range:
@@ -171,9 +242,10 @@ while not game_over:
                 if 0 <= x <= 4 and 0 <= y <= 4:
                     if tiles[x][y].enabled:
                         tiles[x][y].show(screen, value)
-                        # print(x, y, value)
 
     # 그린 선 반영
+
+    # 모든 타일을 갱신
     pygame.display.update()
 
 

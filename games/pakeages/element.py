@@ -1,6 +1,12 @@
-from typing import Any
+from typing import Any, List
+import sys
+import os
 import pygame
 import inspect
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+# from pakeages.gameobject import Tile # noqa: E402
+from pakeages.random_object import random_number_int, random_tile_select  # noqa: E402
 
 dy = [1, 0, -1, 0]
 dx = [0, 1, 0, -1]  # 0: 아래쪽(남), 1: 오른쪽(동), 2: 위쪽(북), 3: 왼쪽(서)
@@ -284,6 +290,69 @@ class Cleanse(Element):
             range_list.append((x + dx[i], y + dy[i], 50))  # 양 옆 50%
 
         return range_list
+
+
+class LightningBolt(Element):
+    """
+    - 이름 : 벼락
+    - 등급 : 일반
+    - 효과 : 선택한 석판 100% 타격->무작위 석판 0~2개 파괴 ->무작위 석판 0~1개 재생성
+
+
+    - effect_range 구하는 프로세스
+    - 1. 0~2를 랜덤으로 정함 확률은 uniform_random(확률 동일)
+    - 2. 선택된 타일 제외 부서지지 않은 타일을 랜덤으로 1에서 정한 만큼 타격(확률 동일)
+    - 3. 2에서 부서진 타일 포함 아직 부서지지 않은 타일 1개 50% 확률로 재생성
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = self.get_image("./games/images/lightningbolt.jpeg")
+
+    def effect_range(
+        self, x: int, y: int, tiles: List[Any]
+    ) -> tuple[
+        list[tuple[int, int, str]],
+        list[tuple[int, int, int]],
+        list[tuple[int, int, int]],
+    ]:  # effect, break, restore
+        range_list = list()
+
+        # 1. Part
+        break_number = random_number_int(0, 2)  # 0~2 랜덤
+        restore_number = random_number_int(0, 1)  # 0~1 랜덤
+        # 2. Part
+        break_candidate_tiles = []
+        restore_candidate_tiles = [(x, y)]  # 자기도 부셔질 수 있다.
+        for i in range(len(tiles)):
+            for j in range(len(tiles[i])):
+                if x == i and y == j:  # 선택된 타일은 무조건 깨지므로 랜덤에 안넣음
+                    continue
+                if tiles[i][j].enabled is True:
+                    break_candidate_tiles.append((i, j))
+                    range_list.append((i, j, "?"))  # 표시를 위함
+
+                else:
+                    restore_candidate_tiles.append((i, j))
+
+        break_tiles = random_tile_select(
+            break_candidate_tiles, break_number
+        )  # 부셔야할 좌표 x,y 반환
+
+        def convert(tup: tuple[int, int]) -> tuple[int, int, int]:
+            return tup[0], tup[1], 100  # 하는 함수 x, y -> x,y,100
+
+        break_tiles = list(map(convert, break_tiles))
+
+        break_tiles.append((x, y, 100))  # 선택한 지점 포함
+        range_list.append((x, y, "100"))  # 100% 선택한 지점은 100%
+
+        restore_tiles = random_tile_select(
+            restore_candidate_tiles, restore_number
+        )  # 생성되야할 좌표 x,y
+        restore_tiles = list(map(convert, restore_tiles))
+
+        return range_list, break_tiles, restore_tiles  # 범위
 
 
 def get_all_elements() -> list[Any]:
